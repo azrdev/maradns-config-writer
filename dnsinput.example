@@ -1,0 +1,5 @@
+#IPv4	IPv6	1st-Name
+none	fd00:f00::1	firstone,first,noone
+192.168.47.11	fd00:f00::122:34	koelnisch
+192.168.8.15	none	zeroeight,fifteen
+192.168.8.14	none	zeroeightfour

@@ -125,6 +125,21 @@ inputfile = open(args.inputfile, 'r')
 
 outConfig = { 'arecords': str(), 'aptrs': str(), 'aaaaptrs': str() }
 
+class Counter:
+    """holds counts of generated records for statistical purposes"""
+    def __init__(self):
+        self.A = 0
+        self.AAAA = 0
+        self.PTR = 0
+    def add(self, ip4, ip6, nameCount):
+        if not ip4 is None:
+            self.A += nameCount
+            self.PTR += 1
+        if not ip6 is None:
+            self.AAAA += nameCount
+            self.PTR += 1
+counter = Counter()
+
 generate = not args.check_only
 
 for rawRow in inputfile:
@@ -154,8 +169,11 @@ for rawRow in inputfile:
     if not handleLine(ip4, ip6, names, outp=outConfig, generate=generate):
         sys.exit(1)
 
+    counter.add(ip4, ip6, len(names))
+
 if generate:
-    print("## A and AAAA config\n{}\n## IPv4 PTRs\n{}\n## IPv6 PTRs\n{}\n".format(outConfig['arecords'], outConfig['aptrs'], outConfig['aaaaptrs']), file=debugOut)
+    #print("## A and AAAA config\n{}\n## IPv4 PTRs\n{}\n## IPv6 PTRs\n{}\n".format(outConfig['arecords'], outConfig['aptrs'], outConfig['aaaaptrs']), file=debugOut)
+    print("Generation successful.\n   A records: {noA}\nAAAA records: {noAAAA}\n PTR records: {noPTR}\n".format(noA=counter.A, noAAAA=counter.AAAA, noPTR=counter.PTR))
 
     for conf in outConfig:
         outFile = open(args.outputprefix + outPathSuffix[conf], 'w' if args.override_output else 'a')
