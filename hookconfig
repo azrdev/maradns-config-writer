@@ -1,0 +1,16 @@
+#!/bin/bash
+
+dnsconvert_bin="/tmp/dnsconvert.py"
+
+# filename of the input file in the repo
+dnsinput="dnsinput"
+
+# directory were static output files are found
+staticdir="/tmp/dnsmanual"
+
+# directory were to put output files
+confdir="/tmp/dnsout"
+
+# filename prefix of output files
+dnsoutput="dnsoutput"
+

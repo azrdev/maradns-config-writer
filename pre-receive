@@ -5,26 +5,27 @@
 # source: http://codeutopia.net/blog/2011/06/30/how-to-automatically-run-unit-tests-from-a-git-push/
 
 tmpdir=$(mktemp -d)
+source "/tmp/hookconfig"
 
 while read oldrev newrev refname
 do
     # Only run this script for the master branch. You can remove this 
     # if block if you wish to run it for others as well.
     if [[ $refname = "refs/heads/master" ]] ; then
- 
+
         # Since the repo is bare, we need to put the actual files someplace, 
         # so we use the temp dir we chose earlier
         git archive $newrev | tar -x -C "$tmpdir"
- 
+
         # Anything echo'd will show up in the console for the person 
         # who's doing a push
         echo "Checking validity for $newrev ... "
- 
-	/tmp/dnsconvert.py --check-only "$tmpdir/dnsinput" dnsoutput
- 
+
+        $dnsconvert_bin --check-only "$tmpdir/$dnsinput" $dnsoutput
+
         rc=$?
 
-	rm -rf "$tmpdir"
+        rm -rf "$tmpdir"
 
         if [[ $rc != 0 ]] ; then
             echo "Failed, push denied."
@@ -32,6 +33,6 @@ do
         fi
     fi
 done
- 
+
 # Everything went OK so we can exit with a zero
 exit 0
