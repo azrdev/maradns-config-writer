@@ -40,6 +40,7 @@ networks, else if the input gets rejected, no output file is touched:
   {ip6_range}""".format(ip4_range=ip4_range, ip6_range=ip6_range))
 
 argParser.add_argument('inputfile', help="CSV file specifying host names and addresses")
+#TODO: make outputprefix optional if check-only supplied
 #TODO: make output default to stdout?
 argParser.add_argument('outputprefix',
     help="[Path and] filename prefix to write config to. For address, IPv4 PTR " +
