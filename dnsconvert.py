@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import argparse
 import re
@@ -9,23 +10,30 @@ except:
     # for python < 3.3, install ipaddr from your distro or http://code.google.com/p/ipaddr-py/
     import ipaddr as ipaddress
 
+debugOut = sys.stderr
 
 # network specific configuration
 
+configFileName = os.path.splitext(os.path.abspath(sys.argv[0]))[0] + '.ini'
+if not os.path.exists(configFileName):
+    print("config file {} not found".format(configFileName), file=debugOut)
+    sys.exit(2)
 configParser = configparser.ConfigParser()
-configParser.read('dnsconvert.ini')
+configParser.read(configFileName)
 
-#TODO: file existance checking, key existance/validity
-domain = configParser['DEFAULT']['domain']
-ip4_range = ipaddress.IPv4Network(configParser['DEFAULT']['ip4_range'])
-ip6_range = ipaddress.IPv6Network(configParser['DEFAULT']['ip6_range'])
+try:
+    domain = configParser['DEFAULT']['domain']
+    ip4_range = ipaddress.IPv4Network(configParser['DEFAULT']['ip4_range'])
+    ip6_range = ipaddress.IPv6Network(configParser['DEFAULT']['ip6_range'])
+except KeyError as ke:
+    print("required option {} missing in config file".format(ke), file=debugOut)
+    sys.exit(2)
 
 # script configuration
 
 #TODO: enumerate keys, they are used in outConfig later, too
 outPathSuffix = { 'arecords': '_address', 'aptrs': '_ip4ptr', 'aaaaptrs': '_ip6ptr' }
 
-debugOut = sys.stderr
 nameRegex = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$")
 
 # argument handling
