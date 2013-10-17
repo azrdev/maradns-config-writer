@@ -2,6 +2,7 @@
 import sys
 import argparse
 import re
+import configparser
 try:
     import ipaddress
 except:
@@ -11,9 +12,13 @@ except:
 
 # network specific configuration
 
-domain = "example.net."
-ip4_range = ipaddress.IPv4Network('192.168.0.0/16')
-ip6_range = ipaddress.IPv6Network('fd00:f00::/64')
+configParser = configparser.ConfigParser()
+configParser.read('dnsconvert.ini')
+
+#TODO: file existance checking, key existance/validity
+domain = configParser['DEFAULT']['domain']
+ip4_range = ipaddress.IPv4Network(configParser['DEFAULT']['ip4_range'])
+ip6_range = ipaddress.IPv6Network(configParser['DEFAULT']['ip6_range'])
 
 # script configuration
 
@@ -26,7 +31,8 @@ nameRegex = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$")
 # argument handling
 
 argParser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-    description="""Convert DNS configuration.\n
+    description="""Convert DNS configuration.
+
 Takes a csv file specifiying name-IP mappings, and outputs MaraDNS zone files.
 The csv file uses any whitespace as delimiters, and no quote handling is
 enabled. Lines starting with # or containing only whitespace are ignored. Every
@@ -192,4 +198,6 @@ AAAA records: {noAAAA}
         outFile.write(outConfig[conf])
         outFile.write('\n')
         outFile.close()
+
+# vim:set ts=4 et sw=4 sts=4
 
