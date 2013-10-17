@@ -4,7 +4,8 @@
 # source: http://codeutopia.net/blog/2011/06/30/how-to-automatically-run-unit-tests-from-a-git-push/
 
 tmpdir=$(mktemp -d)
-source "/tmp/hookconfig"
+parentdir=$(dirname $(readlink -f $0))
+source "$parentdir/hookconfig"
 
 while read oldrev newrev refname
 do
