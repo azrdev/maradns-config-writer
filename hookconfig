@@ -1,6 +1,8 @@
 #!/bin/bash
 
-dnsconvert_bin="/tmp/dnsconvert.py"
+parentdir=$(dirname $(readlink -f $0))
+
+dnsconvert_bin="$parentdir/dnsconvert.py"
 
 # filename of the input file in the repo
 dnsinput="dnsinput"
