@@ -16,3 +16,6 @@ confdir="/tmp/dnsout"
 # filename prefix of output files
 dnsoutput="dnsoutput"
 
+# command to restart maradns server
+restart_maradns="/etc/init.d/maradns restart"
+

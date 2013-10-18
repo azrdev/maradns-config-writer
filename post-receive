@@ -3,7 +3,6 @@
 # git hook to call conversion utility after a push, to convert & deploy pushed contents
 # source: http://codeutopia.net/blog/2011/06/30/how-to-automatically-run-unit-tests-from-a-git-push/
 
-tmpdir=$(mktemp -d)
 parentdir=$(dirname $(readlink -f $0))
 source "$parentdir/hookconfig"
 
@@ -13,33 +12,12 @@ do
     # if block if you wish to run it for others as well.
     if [[ $refname = "refs/heads/master" ]] ; then
 
+        echo "Deploying $newrev ... "
+
         # Since the repo is bare, we need to put the actual files someplace,
         # so we use the temp dir we chose earlier
-        git archive $newrev | tar -x -C "$tmpdir"
+        git archive $newrev | tar -x -C "$confdir" -f - "$dnsinput"
 
-        # Anything echo'd will show up in the console for the person
-        # who's doing a push
-        echo "Converting and deploying $newrev ... "
-
-        # copy static/manual configuration to output, so we can append to it
-        if [[ -d "$staticdir" ]] ; then
-            echo "Incorporating static/manual configuration ..."
-            #TODO: check if those exist
-            cp "$staticdir/${dnsoutput}_address" "$confdir"
-            cp "$staticdir/${dnsoutput}_ip4ptr" "$confdir"
-            cp "$staticdir/${dnsoutput}_ip6ptr" "$confdir"
-        fi
-
-        $dnsconvert_bin --override-output "$tmpdir/$dnsinput" "$confdir/$dnsoutput"
-
-        rc=$?
-
-        rm -rf "$tmpdir"
-
-        if [[ $rc != 0 ]] ; then
-            echo "Failed, PLEASE FIX immediately!"
-            exit $rc
-        fi
     fi
 done
  
