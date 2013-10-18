@@ -18,7 +18,7 @@ Running converter.sh can be done in multiple ways:
 ### Upon change via incron
 incron uses inotify to get an event everytime a file changes. So by writing into incrontab
 
-    $confdir/$dnsinput  IN_CLOSE_WRITE  /path/to/converter.sh
+    $confdir IN_CLOSE_WRITE /path/to/converter.sh $#
 
-you only have to start incrond and everything should work
+you only have to start incrond and everything should work. You have to watch $confdir instead of $confdir/$dnsinput, because the tar command used in the post-commit hook overrides that file in a way inotify events get only fired on the parent directory
 

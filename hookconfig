@@ -19,3 +19,6 @@ dnsoutput="dnsoutput"
 # command to restart maradns server
 restart_maradns="/etc/init.d/maradns restart"
 
+# command to call in converter.sh to log output - you may simply use echo
+logcommand="logger"
+
